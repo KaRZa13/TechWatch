@@ -55,7 +55,7 @@
               size="sm"
             />
           </div>
-          <div class="flex flex-col px-48 py-4 space-y-4">
+          <div class="flex flex-col px-48 py-4 space-y-4 ">
             <FeedArticle
               v-for="(video, index) in videos"
               :key="index"
@@ -92,13 +92,21 @@ const sourcesTable = await supabase.from('source').select(`id, name, type (name)
 const youtubeSources = sourcesTable.filter(source => source.type === 'Youtube')
 const rssSources = sourcesTable.filter(source => source.type === 'Flux RSS')
 
-const videos = (await Promise.all(
+const videos = ((await Promise.all(
   youtubeSources.map(source => $fetch('/api/youtube/channel', { query: { url: source.url } }))
-)).flat() as Article[]
+)).flat() as Article[]).sort((a, b) => {
+  if (!a.publishedAt) return 1
+  if (!b.publishedAt) return -1
+  return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+})
 
-const rssArticles = (await Promise.all(
+const rssArticles = ((await Promise.all(
   rssSources.map(source => $fetch<Article[]>('/api/rss/rss', { query: { url: source.url } }))
-)).flat()
+)).flat()).sort((a, b) => {
+  if (!a.publishedAt) return 1
+  if (!b.publishedAt) return -1
+  return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+})
 
 onMounted(() => {
   console.log('YouTube videos:', videos)

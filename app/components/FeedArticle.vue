@@ -89,13 +89,22 @@ export interface Article {
   title: string
   description?: string
   url: string
-  thumbnail?: string
-  publishedAt?: string
+  thumbnail: string
+  publishedAt: string
   source?: string
 }
 
-const props = defineProps<{ article: Article }>()
+export interface SavedItem {
+  title: string
+  url: string
+  type: string
+  publishedAt: string
+  thumbnail: string
+  description?: string
+}
 
+const props = defineProps<{ article: Article }>()
+const supabase = useSupabaseClient()
 const toast = useToast()
 const isSaved = ref(false)
 const isSummarizing = ref(false)
@@ -119,7 +128,28 @@ const formattedDate = computed(() => {
 })
 
 async function save() {
-  // TODO: persist to Supabase
+  const savedItem = {
+    title: props.article.title,
+    url: props.article.url,
+    type: props.article.type,
+    published_at: props.article.publishedAt,
+    thumbnail: props.article.thumbnail,
+    description: props.article.description ?? ''
+  }
+  console.log('Saving item:', savedItem)
+
+  const { error } = await supabase.from('saved').insert(savedItem as never).select()
+  if (error) {
+    console.error('Error saving item:', error)
+    toast.add({
+      title: 'Erreur',
+      description: 'Impossible de sauvegarder l\'article.',
+      color: 'error',
+      icon: 'i-lucide-alert-circle'
+    })
+    return
+  }
+
   isSaved.value = true
   toast.add({
     title: 'Article sauvegardé',
