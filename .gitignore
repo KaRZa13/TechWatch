@@ -28,5 +28,9 @@ logs
 .idea
 
 # agents
-CLAUDE.MD
+CLAUDE.md
 .claude
+.agents
+
+# BDD
+supabase

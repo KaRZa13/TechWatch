@@ -7,7 +7,7 @@
     <UButton
       v-bind="{
         icon: 'i-lucide-settings',
-        label: collapsed ? undefined : 'Appearance',
+        label: collapsed ? undefined : 'Settings',
         trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
       }"
       color="neutral"
