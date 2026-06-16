@@ -18,18 +18,48 @@ After installing new dependencies, `nuxt prepare` runs automatically via postins
 
 ## Architecture
 
-**veille-techno** is a Nuxt 4 (Vue 3 SSR) application for tech monitoring, styled with Tailwind CSS via Nuxt UI.
+**veille-techno** is a Nuxt 4 (Vue 3 SSR) application for tech monitoring (TechWatch), styled with Tailwind CSS via Nuxt UI.
 
 **Stack:**
 - Nuxt 4 with `app/` directory layout
-- Nuxt UI 4 (`@nuxt/ui`) — component library, auto-imported, no explicit imports needed
+- Nuxt UI 4 (`@nuxt/ui` v4.8.2) — component library, auto-imported, no explicit imports needed
 - Supabase (`@nuxtjs/supabase`) — backend/auth, configured via `SUPABASE_URL` and `SUPABASE_KEY` env vars
 - TypeScript — types are partially generated in `.nuxt/` (never edit manually)
 - ESLint via `@nuxt/eslint` — config extends `.nuxt/eslint.config.mjs`
+- Tailwind CSS v4 via `@tailwindcss/vite`
 
 **Key conventions:**
 - Nuxt auto-imports are active: components, composables, and Vue APIs (`ref`, `computed`, etc.) are available without import statements
-- Nuxt UI components (`UButton`, `UCard`, etc.) are globally available — no import needed
-- App code lives in `app/` — Nuxt 4 layout with `app/app.vue` as root, `app/pages/`, `app/components/`, `app/composables/` etc.
-- Server routes go in `server/api/` and `server/routes/`
+- Nuxt UI components (`UButton`, `UCard`, `UDashboardPanel`, etc.) are globally available — no import needed
+- App code lives in `app/` — Nuxt 4 layout with `app/app.vue` as root, `app/pages/`, `app/components/`, `app/layouts/`
+- No `server/` directory exists yet — server routes would go in `server/api/` and `server/routes/`
 - TypeScript tsconfig references `.nuxt/tsconfig.*.json` (generated) — run `bun run dev` once before editing to generate them
+- Font: Space Grotesk (set globally in `app/app.vue`)
+
+## File Structure
+
+```
+app/
+  app.vue                     # Root — UApp > NuxtLayout > NuxtPage
+  assets/css/main.css         # Tailwind + Nuxt UI imports
+  layouts/
+    default.vue               # UDashboardGroup with collapsible/resizable sidebar, fetches categories from Supabase
+  pages/
+    index.vue                 # Fil d'actualités — main feed with refresh button
+    saved.vue                 # Sauvegardés — saved articles
+    alerts.vue                # Alertes — notification alerts
+  components/
+    AppearanceMenu.vue        # Settings dropdown: theme color (primary/neutral) + dark/light mode toggle
+```
+
+## UI Patterns
+
+The app uses Nuxt UI's Dashboard layout:
+- `UDashboardGroup` wraps all pages in the default layout
+- `UDashboardSidebar` (collapsible, resizable) with navigation links and a categories list from Supabase
+- Each page is a `UDashboardPanel` with a `UDashboardNavbar` header
+- `AppearanceMenu` in the sidebar footer controls primary color, neutral color, and color mode (`useColorMode`, `useAppConfig`)
+
+## Database
+
+Supabase table in use: `categorie` (columns: `id`, `name`) — fetched in the default layout sidebar.

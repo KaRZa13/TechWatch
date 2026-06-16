@@ -30,3 +30,7 @@ logs
 # agents
 CLAUDE.MD
 .claude
+.agents
+
+# BDD
+supabase

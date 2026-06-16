@@ -1,7 +1,7 @@
 <template>
-  <UDashboardPanel id="alerts">
+  <UDashboardPanel id="sources">
     <template #header>
-      <UDashboardNavbar title="Alertes" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar title="Toutes les sources" :ui="{ right: 'gap-3' }">
         <template #leading>
           <UDashboardSidebarCollapse/>
         </template>
@@ -31,7 +31,6 @@
 
 <script setup lang="ts">
 const isLoading = ref(false)
-const router = useRouter()
 
 async function refresh() {
   isLoading.value = true
