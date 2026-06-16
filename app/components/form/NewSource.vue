@@ -46,7 +46,6 @@
 
     <UButton type="submit" variant="solid" color="primary" label="Ajouter la source" class="mt-4 justify-center cursor-pointer" />
   </UForm>
-  <UButton @click="logState" variant="outline" color="neutral" label="Log State" class="mt-2 justify-center cursor-pointer" />
 </template>
 
 <script setup lang="ts">
@@ -98,10 +97,6 @@ async function handleSubmit(event: FormSubmitEvent<NewSource>) {
   Object.assign(state, initialState())
   toast.add({ title: 'Succès', description: 'La source a été ajoutée avec succès.' })
   emit('success')
-}
-
-function logState() {
-  console.log('Current state:', state)
 }
 
 const sourceColors = ref([
